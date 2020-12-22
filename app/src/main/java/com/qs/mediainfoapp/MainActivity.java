@@ -15,27 +15,53 @@ public class MainActivity extends BaseActivity {
     private Button btnLogin;
     private Button btnRegister;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+//    @Override
+//    public void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_main);
+//
+//        btnLogin = findViewById(R.id.btn_login);
+//        btnRegister = findViewById(R.id.btn_register);
+//
+//        btnLogin.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                navigateTo(LoginActivity.class);
+//            }
+//        });
+//
+//        btnRegister.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                navigateTo(RegisterActivity.class);
+//            }
+//        });
+//    }
 
+    @Override
+    public int initLayout() {
+        return R.layout.activity_main;
+    }
+
+    @Override
+    public void initView() {
         btnLogin = findViewById(R.id.btn_login);
         btnRegister = findViewById(R.id.btn_register);
+    }
 
+    @Override
+    public void initData() {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
+                navigateTo(LoginActivity.class);
             }
         });
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
-                startActivity(intent);
+                navigateTo(RegisterActivity.class);
             }
         });
     }

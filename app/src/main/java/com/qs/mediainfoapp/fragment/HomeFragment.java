@@ -42,7 +42,7 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_home, container, false);
-        viewPager = v.findViewById(R.id.viewPager);
+        viewPager = v.findViewById(R.id.fixedViewPager);
         slidingTabLayout = v.findViewById(R.id.slidingTabLayout);
         return v;
     }

@@ -3,58 +3,159 @@ package com.qs.mediainfoapp.entity;
 import java.io.Serializable;
 
 public class VideoEntity implements Serializable {
-    private int id;
-    private String tittle;
-    private String name;
-    private int dzCount;
-    private int collectCount;
-    private int commentCount;
 
-    public int getId() {
-        return id;
+
+    private int vid;
+    private String vtitle;
+    private String author;
+    private String coverurl;
+    private String headurl;
+    private String playurl;
+    private String createTime;
+    private String updateTime;
+    private int categoryId;
+    private String categoryName;
+    private VideoSocialEntity videoSocialEntity;
+
+    public int getVid() {
+        return vid;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setVid(int vid) {
+        this.vid = vid;
     }
 
-    public String getTittle() {
-        return tittle;
+    public String getVtitle() {
+        return vtitle;
     }
 
-    public void setTittle(String tittle) {
-        this.tittle = tittle;
+    public void setVtitle(String vtitle) {
+        this.vtitle = vtitle;
     }
 
-    public String getName() {
-        return name;
+    public String getAuthor() {
+        return author;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
-    public int getDzCount() {
-        return dzCount;
+    public String getCoverurl() {
+        return coverurl;
     }
 
-    public void setDzCount(int dzCount) {
-        this.dzCount = dzCount;
+    public void setCoverurl(String coverurl) {
+        this.coverurl = coverurl;
     }
 
-    public int getCollectCount() {
-        return collectCount;
+    public String getHeadurl() {
+        return headurl;
     }
 
-    public void setCollectCount(int collectCount) {
-        this.collectCount = collectCount;
+    public void setHeadurl(String headurl) {
+        this.headurl = headurl;
     }
 
-    public int getCommentCount() {
-        return commentCount;
+    public String getPlayurl() {
+        return playurl;
     }
 
-    public void setCommentCount(int commentCount) {
-        this.commentCount = commentCount;
+    public void setPlayurl(String playurl) {
+        this.playurl = playurl;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public VideoSocialEntity getVideoSocialEntity() {
+        return videoSocialEntity;
+    }
+
+    public void setVideoSocialEntity(VideoSocialEntity videoSocialEntity) {
+        this.videoSocialEntity = videoSocialEntity;
+    }
+
+    public static class VideoSocialEntity {
+        /**
+         * commentnum : 103
+         * likenum : 121
+         * collectnum : 220
+         */
+
+        private int commentnum;
+        private int likenum;
+        private int collectnum;
+        private boolean flagLike;
+        private boolean flagCollect;
+
+        public int getCommentnum() {
+            return commentnum;
+        }
+
+        public void setCommentnum(int commentnum) {
+            this.commentnum = commentnum;
+        }
+
+        public int getLikenum() {
+            return likenum;
+        }
+
+        public void setLikenum(int likenum) {
+            this.likenum = likenum;
+        }
+
+        public int getCollectnum() {
+            return collectnum;
+        }
+
+        public void setCollectnum(int collectnum) {
+            this.collectnum = collectnum;
+        }
+
+        public boolean isFlagLike() {
+            return flagLike;
+        }
+
+        public void setFlagLike(boolean flagLike) {
+            this.flagLike = flagLike;
+        }
+
+        public boolean isFlagCollect() {
+            return flagCollect;
+        }
+
+        public void setFlagCollect(boolean flagCollect) {
+            this.flagCollect = flagCollect;
+        }
     }
 }

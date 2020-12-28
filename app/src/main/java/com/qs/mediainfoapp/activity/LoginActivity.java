@@ -1,36 +1,19 @@
 package com.qs.mediainfoapp.activity;
 
-import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
-
-import androidx.annotation.LongDef;
 
 import com.google.gson.Gson;
 import com.qs.mediainfoapp.R;
 import com.qs.mediainfoapp.api.Api;
 import com.qs.mediainfoapp.api.ApiConfig;
-import com.qs.mediainfoapp.api.Callback;
+import com.qs.mediainfoapp.api.QsCallback;
 import com.qs.mediainfoapp.entity.LoginResponse;
 
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.Map;
-
-import okhttp3.Call;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class LoginActivity extends BaseActivity {
 
@@ -94,7 +77,7 @@ public class LoginActivity extends BaseActivity {
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("mobile", account);
         params.put("password", pwd);
-        Api.config(ApiConfig.LOGIN, params).postRequest(new Callback() {
+        Api.config(ApiConfig.LOGIN, params).postRequest(new QsCallback() {
             @Override
             public void onSuccess(String res) {
                 Log.d("Token", res);

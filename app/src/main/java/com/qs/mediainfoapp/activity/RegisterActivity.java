@@ -1,19 +1,15 @@
 package com.qs.mediainfoapp.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.qs.mediainfoapp.R;
 import com.qs.mediainfoapp.api.Api;
 import com.qs.mediainfoapp.api.ApiConfig;
-import com.qs.mediainfoapp.api.Callback;
+import com.qs.mediainfoapp.api.QsCallback;
 
 import java.util.HashMap;
 
@@ -79,7 +75,7 @@ public class RegisterActivity extends BaseActivity {
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("mobile", account);
         params.put("password", pwd);
-        Api.config(ApiConfig.Register, params).postRequest(new Callback() {
+        Api.config(ApiConfig.Register, params).postRequest(new QsCallback() {
             @Override
             public void onSuccess(String res) {
                 showToastSync(res);

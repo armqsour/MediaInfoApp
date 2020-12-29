@@ -15,12 +15,13 @@ import com.qs.mediainfoapp.entity.TabEntity;
 import com.qs.mediainfoapp.fragment.CollectFragment;
 import com.qs.mediainfoapp.fragment.HomeFragment;
 import com.qs.mediainfoapp.fragment.MyFragment;
+import com.qs.mediainfoapp.fragment.NewsFragment;
 
 import java.util.ArrayList;
 
 public class HomeActivity extends BaseActivity {
 
-    private String[] mTitles = {"首页", "收藏", "我的"};
+    private String[] mTitles = {"首页", "资讯", "我的"};
     private int[] mIconUnselectIds = {
             R.mipmap.home_unselect, R.mipmap.collect_unselect,
             R.mipmap.my_unselect};
@@ -91,7 +92,7 @@ public class HomeActivity extends BaseActivity {
     @Override
     public void initData() {
         mFragments.add(HomeFragment.newInstance());
-        mFragments.add(CollectFragment.newInstance());
+        mFragments.add(NewsFragment.newInstance());
         mFragments.add(MyFragment.newInstance());
         for (int i = 0; i < mTitles.length; i++) {
             mTabEntities.add(new TabEntity(mTitles[i], mIconSelectIds[i], mIconUnselectIds[i]));

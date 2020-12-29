@@ -1,8 +1,14 @@
 package com.qs.mediainfoapp.api;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.qs.mediainfoapp.activity.LoginActivity;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -17,6 +23,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class Api {
         private static OkHttpClient client;
@@ -67,10 +75,13 @@ public class Api {
             });
         }
 
-    public void getRequest(final QsCallback callback) {
+    public void getRequest(Context context, final QsCallback callback) {
+        SharedPreferences sp = context.getSharedPreferences("sp_qs", MODE_PRIVATE);
+        String token = sp.getString("token", "");
         String url = getAppendUrl(requestUrl, mParams);
         Request request = new Request.Builder()
                 .url(url)
+                .addHeader("token", token)
                 .get()
                 .build();
         Call call = client.newCall(request);
@@ -84,6 +95,17 @@ public class Api {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String result = response.body().string();
+                JSONObject jsonObject = null;
+                try {
+                    jsonObject = new JSONObject(result);
+                String code = jsonObject.getString("code");
+                if(code.equals("401")){
+                    Intent intent = new Intent(context, LoginActivity.class);
+                    context.startActivity(intent);
+                }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 callback.onSuccess(result);
             }
         });

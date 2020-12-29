@@ -1,5 +1,6 @@
 package com.qs.mediainfoapp.activity;
 
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -86,7 +87,8 @@ public class LoginActivity extends BaseActivity {
                 if(loginResponse.getCode() == 0){
                     String token = loginResponse.getToken();
                     saveStringToSP("token", token);
-                    navigateTo(HomeActivity.class);
+//                    navigateTo(HomeActivity.class);
+                    navigateToWithFlag(HomeActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     showToastSync("登录成功");
                 }else{
                     showToastSync("登陆失败");

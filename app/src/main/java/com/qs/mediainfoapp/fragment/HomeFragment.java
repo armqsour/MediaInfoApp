@@ -18,12 +18,12 @@ import com.qs.mediainfoapp.adapter.HomeAdapter;
 
 import java.util.ArrayList;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends BaseFragment {
 
     private ArrayList<Fragment> mFragments = new ArrayList<>();
     private final String[] mTitles = {
-            "热门", "iOS", "Android"
-            , "前端", "后端", "设计", "工具资源"
+            "游戏", "音乐", "美食"
+            , "农人", "vlog", "搞笑", "宠物"
     };
     private ViewPager viewPager;
     private SlidingTabLayout slidingTabLayout;
@@ -37,21 +37,22 @@ public class HomeFragment extends Fragment {
         return fragment;
     }
 
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_home, container, false);
-        viewPager = v.findViewById(R.id.fixedViewPager);
-        slidingTabLayout = v.findViewById(R.id.slidingTabLayout);
-        return v;
+    protected int initLayout() {
+        return R.layout.fragment_home;
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        for (String title : mTitles) {
-            mFragments.add(VideoFragment.newInstance(title));
+    protected void initView() {
+        viewPager = mRootView.findViewById(R.id.fixedViewPager);
+        slidingTabLayout = mRootView.findViewById(R.id.slidingTabLayout);
+    }
+
+    @Override
+    protected void initData() {
+        for (String tittle : mTitles) {
+            mFragments.add(VideoFragment.newInstance(tittle));
         }
         //预加载fragment,防止出错
         viewPager.setOffscreenPageLimit(mFragments.size());

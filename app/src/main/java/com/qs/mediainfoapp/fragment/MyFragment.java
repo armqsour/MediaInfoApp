@@ -1,62 +1,72 @@
 package com.qs.mediainfoapp.fragment;
 
-import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
+import android.content.Intent;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.qs.mediainfoapp.R;
+import com.qs.mediainfoapp.activity.LoginActivity;
+//import com.qs.mediainfoapp.activity.MyCollectActivity;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MyFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class MyFragment extends Fragment {
+import butterknife.BindView;
+import butterknife.OnClick;
+import skin.support.SkinCompatManager;
+//import skin.support.SkinCompatManager;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class MyFragment extends BaseFragment {
+
+    @BindView(R.id.img_header)
+    ImageView imgHeader;
 
     public MyFragment() {
-        // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MyFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static MyFragment newInstance() {
         MyFragment fragment = new MyFragment();
         return fragment;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    protected int initLayout() {
+        return R.layout.fragment_my;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my, container, false);
+    protected void initView() {
+
+    }
+
+    @Override
+    protected void initData() {
+
+    }
+
+    @OnClick({R.id.img_header, R.id.rl_collect, R.id.rl_skin, R.id.rl_logout})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.img_header:
+
+                break;
+            case R.id.rl_collect:
+//                navigateTo(MyCollectActivity.class);
+                break;
+            case R.id.rl_skin:
+                String skin = getStringFromSP("skin");
+                if (skin.equals("night")) {
+                    // 恢复应用默认皮肤
+                    SkinCompatManager.getInstance().restoreDefaultTheme();
+                    saveStringToSP("skin", "default");
+                } else {
+                    SkinCompatManager.getInstance().loadSkin("night", SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN); // 后缀加载
+                    saveStringToSP("skin", "night");
+                }
+                break;
+            case R.id.rl_logout:
+                removeByKey("token");
+                navigateToWithFlag(LoginActivity.class,
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                break;
+        }
     }
 }

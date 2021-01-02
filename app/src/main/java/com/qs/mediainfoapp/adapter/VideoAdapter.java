@@ -1,6 +1,9 @@
 package com.qs.mediainfoapp.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,13 +15,21 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dueeeke.videocontroller.component.PrepareView;
+import com.google.gson.Gson;
 import com.qs.mediainfoapp.R;
+import com.qs.mediainfoapp.activity.HomeActivity;
+import com.qs.mediainfoapp.api.Api;
+import com.qs.mediainfoapp.api.ApiConfig;
+import com.qs.mediainfoapp.api.QsCallback;
+import com.qs.mediainfoapp.entity.BaseResponse;
+import com.qs.mediainfoapp.entity.LoginResponse;
 import com.qs.mediainfoapp.entity.VideoEntity;
 import com.qs.mediainfoapp.listener.OnItemChildClickListener;
 import com.qs.mediainfoapp.listener.OnItemClickListener;
 import com.qs.mediainfoapp.view.CircleTransform;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -63,10 +74,21 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             int likenum = videoEntity.getVideoSocialEntity().getLikenum();
             int commentnum = videoEntity.getVideoSocialEntity().getCommentnum();
             int collectnum = videoEntity.getVideoSocialEntity().getCollectnum();
+            boolean flagLike = videoEntity.getVideoSocialEntity().isFlagLike();
+            boolean flagCollect = videoEntity.getVideoSocialEntity().isFlagCollect();
             viewHolder.tvDz.setText(String.valueOf(likenum));
             viewHolder.tvComment.setText(String.valueOf(commentnum));
             viewHolder.tvCollect.setText(String.valueOf(collectnum));
-
+            viewHolder.flagCollect = flagCollect;
+            viewHolder.flagLike = flagLike;
+            if(flagLike){
+                viewHolder.tvDz.setTextColor(Color.parseColor("#E21918"));
+                viewHolder.imgDizan.setImageResource(R.mipmap.dianzan_select);
+            }
+            if(flagCollect){
+                viewHolder.tvCollect.setTextColor(Color.parseColor("#E21918"));
+                viewHolder.imgCollect.setImageResource(R.mipmap.collect_select);
+            }
         }
 
 //        通过Picasso库异步加载网络图片
@@ -96,11 +118,16 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private TextView tvCollect;
         private TextView tvComment;
         private ImageView imgHeader;
-        //        private ImageView imgCover;
+
+        private ImageView imgCollect;
+        private ImageView imgDizan;
+
         public ImageView mThumb;
         public PrepareView mPrepareView;
         public FrameLayout mPlayerContainer;
         public int mPosition;
+        private boolean flagCollect;
+        private boolean flagLike;
 
         public ViewHolder(@NonNull View view) {
             super(view);
@@ -110,7 +137,10 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             tvCollect = view.findViewById(R.id.collect);
             tvComment = view.findViewById(R.id.comment);
             imgHeader = view.findViewById(R.id.img_header);
-//            imgCover = view.findViewById(R.id.img_cover);
+
+            imgCollect = view.findViewById(R.id.img_collect);
+            imgDizan = view.findViewById(R.id.img_like);
+
             mPlayerContainer = view.findViewById(R.id.player_container);
             mPrepareView = view.findViewById(R.id.prepare_view);
             mThumb = mPrepareView.findViewById(R.id.thumb);
@@ -120,6 +150,50 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (mOnItemClickListener != null) {
                 view.setOnClickListener(this);
             }
+
+            imgCollect.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int collectNum = Integer.parseInt(tvCollect.getText().toString());
+                    if(flagCollect){
+                        if (collectNum > 0) {
+                            tvCollect.setText(String.valueOf(--collectNum));
+                            tvCollect.setTextColor(Color.parseColor("#161616"));
+                            imgCollect.setImageResource(R.mipmap.collect);
+                            updateCount(data.get(mPosition).getVid(), 1, !flagCollect);
+                        }
+                    } else{
+                        tvCollect.setText(String.valueOf(++collectNum));
+                        tvCollect.setTextColor(Color.parseColor("#E21918"));
+                        imgCollect.setImageResource(R.mipmap.collect_select);
+                        updateCount(data.get(mPosition).getVid(), 1, !flagCollect);
+                    }
+                    flagCollect = !flagCollect;
+                }
+            });
+
+            imgDizan.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int likeNum = Integer.parseInt(tvDz.getText().toString());
+                    if(flagLike){
+                        if (likeNum > 0) {
+                            tvDz.setText(String.valueOf(--likeNum));
+                            tvDz.setTextColor(Color.parseColor("#161616"));
+                            updateCount(data.get(mPosition).getVid(), 2, !flagLike);
+                            imgDizan.setImageResource(R.mipmap.dianzan);
+                        }
+                    } else{
+                        tvDz.setText(String.valueOf(++likeNum));
+                        tvDz.setTextColor(Color.parseColor("#E21918"));
+                        imgDizan.setImageResource(R.mipmap.dianzan_select);
+                        updateCount(data.get(mPosition).getVid(), 2, !flagLike);
+                    }
+                    flagLike = !flagLike;
+                }
+            });
+
+            //通过Tag将ViewHolder和ItemView绑定
             view.setTag(this);
         }
 
@@ -142,5 +216,30 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         mOnItemClickListener = onItemClickListener;
+    }
+
+    private void updateCount(int vid, int type, boolean flag){
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put("vid", vid);
+        params.put("type", type);
+        params.put("flag", flag);
+        Api.config(ApiConfig.VIDEO_UPDATE_COUNT, params).postRequest(mContext, new QsCallback() {
+            @Override
+            public void onSuccess(String res) {
+                Log.d("token(LoginActivity)", res);
+                Gson gson = new Gson();
+                BaseResponse baseResponse = gson.fromJson(res, BaseResponse.class);
+                if(baseResponse.getCode() == 0){
+
+                }else{
+
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.e("onFailure", e.toString());
+            }
+        });
     }
 }

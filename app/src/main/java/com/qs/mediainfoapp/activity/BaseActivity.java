@@ -64,7 +64,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         editor.commit();
     }
 
-    protected VideoViewManager getVideoVIewManager(){
+    protected VideoViewManager getVideoViewManager(){
         return VideoViewManager.instance();
     }
 
@@ -73,4 +73,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     public AppCompatDelegate getDelegate() {
         return SkinAppCompatDelegateImpl.get(this, this);
     }
+
+
 }

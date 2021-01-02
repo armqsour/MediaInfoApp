@@ -3,9 +3,11 @@ package com.qs.mediainfoapp.fragment;
 import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.qs.mediainfoapp.R;
 import com.qs.mediainfoapp.activity.LoginActivity;
+import com.qs.mediainfoapp.activity.MyCollectActivity;
 //import com.qs.mediainfoapp.activity.MyCollectActivity;
 
 import butterknife.BindView;
@@ -18,6 +20,8 @@ public class MyFragment extends BaseFragment {
 
     @BindView(R.id.img_header)
     ImageView imgHeader;
+    @BindView(R.id.name)
+    TextView tv_name;
 
     public MyFragment() {
     }
@@ -39,7 +43,7 @@ public class MyFragment extends BaseFragment {
 
     @Override
     protected void initData() {
-
+        tv_name.setText(getStringFromSP("userName"));
     }
 
     @OnClick({R.id.img_header, R.id.rl_collect, R.id.rl_skin, R.id.rl_logout})
@@ -49,7 +53,7 @@ public class MyFragment extends BaseFragment {
 
                 break;
             case R.id.rl_collect:
-//                navigateTo(MyCollectActivity.class);
+                navigateTo(MyCollectActivity.class);
                 break;
             case R.id.rl_skin:
                 String skin = getStringFromSP("skin");

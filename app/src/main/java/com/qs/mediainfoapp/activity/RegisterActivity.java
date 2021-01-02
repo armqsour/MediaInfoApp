@@ -75,15 +75,17 @@ public class RegisterActivity extends BaseActivity {
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("mobile", account);
         params.put("password", pwd);
-        Api.config(ApiConfig.Register, params).postRequest(new QsCallback() {
+        Api.config(ApiConfig.Register, params).postRequest(mContext, new QsCallback() {
             @Override
             public void onSuccess(String res) {
-                showToastSync(res);
+                navigateTo(LoginActivity.class);
+                showToastSync("注册成功！");
             }
 
             @Override
             public void onFailure(Exception e) {
                 Log.e("onFailure", e.toString());
+                showToastSync("注册失败，请联系管理员");
             }
         });
 

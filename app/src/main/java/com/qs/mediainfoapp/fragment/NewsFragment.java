@@ -138,7 +138,7 @@ public class NewsFragment extends BaseFragment {
                                     }
                                 }
                             }
-                            Log.d("token", res);
+                            Log.d("token(NewsActivity)", res);
                         }
                     });
                 }

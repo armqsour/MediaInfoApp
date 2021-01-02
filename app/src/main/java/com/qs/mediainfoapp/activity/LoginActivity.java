@@ -78,10 +78,10 @@ public class LoginActivity extends BaseActivity {
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("mobile", account);
         params.put("password", pwd);
-        Api.config(ApiConfig.LOGIN, params).postRequest(new QsCallback() {
+        Api.config(ApiConfig.LOGIN, params).postRequest(mContext, new QsCallback() {
             @Override
             public void onSuccess(String res) {
-                Log.d("Token", res);
+                Log.d("token(LoginActivity)", res);
                 Gson gson = new Gson();
                 LoginResponse loginResponse = gson.fromJson(res, LoginResponse.class);
                 if(loginResponse.getCode() == 0){
@@ -89,6 +89,7 @@ public class LoginActivity extends BaseActivity {
                     saveStringToSP("token", token);
 //                    navigateTo(HomeActivity.class);
                     navigateToWithFlag(HomeActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    saveStringToSP("userName", account);
                     showToastSync("登录成功");
                 }else{
                     showToastSync("登陆失败");

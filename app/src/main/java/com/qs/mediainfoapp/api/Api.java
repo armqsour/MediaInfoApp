@@ -45,7 +45,9 @@ public class Api {
             return api;
         }
 
-        public void postRequest(QsCallback callback){
+        public void postRequest(Context context, QsCallback callback){
+            SharedPreferences sp = context.getSharedPreferences("sp_qs", MODE_PRIVATE);
+            String token = sp.getString("token", "");
             JSONObject jsonObject = new JSONObject(mParams);
             String jsonStr = jsonObject.toString();
             RequestBody requestBodyJson =
@@ -55,6 +57,7 @@ public class Api {
             Request request = new Request.Builder()
                     .url(requestUrl)
                     .addHeader("contentType", "application/json;charset=UTF-8")
+                    .addHeader("token", token)
                     .post(requestBodyJson)
                     .build();
             //第四步创建call回调对象
@@ -79,6 +82,7 @@ public class Api {
         SharedPreferences sp = context.getSharedPreferences("sp_qs", MODE_PRIVATE);
         String token = sp.getString("token", "");
         String url = getAppendUrl(requestUrl, mParams);
+        Log.d("url", url);
         Request request = new Request.Builder()
                 .url(url)
                 .addHeader("token", token)
@@ -88,7 +92,10 @@ public class Api {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e("onFailure", e.getMessage());
+                if(e==null){
+                    Log.d("onFailure", "e is null!");
+                }
+//                Log.e("onFailure", e.getMessage());
                 callback.onFailure(e);
             }
 

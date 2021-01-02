@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="329dp"
         android:scaleType="centerCrop"
-        android:src="@mipmap/login"
+        android:src="@mipmap/login_background"
         />
 
     <LinearLayout
@@ -47,7 +47,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="@string/account_hint"
-                    android:text="root"
                     android:gravity="center_vertical"
                     android:textColorHint="#bcbcbc"
                     android:textColor="@color/black"
@@ -83,7 +82,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="@string/pwd_hint"
-                    android:text="123456"
                     android:inputType="textPassword"
                     android:gravity="center_vertical"
                     android:textColorHint="#bcbcbc"

@@ -1,16 +1,13 @@
-package com.qs.mediainfoapp.fragment;
-
-
-import androidx.annotation.NonNull;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+package com.qs.mediainfoapp.activity;
 
 import android.content.pm.ActivityInfo;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.dueeeke.videocontroller.StandardVideoController;
 import com.dueeeke.videocontroller.component.CompleteView;
@@ -23,13 +20,16 @@ import com.google.gson.Gson;
 import com.qs.mediainfoapp.R;
 import com.qs.mediainfoapp.Tag;
 import com.qs.mediainfoapp.Utils;
-import com.qs.mediainfoapp.activity.LoginActivity;
+import com.qs.mediainfoapp.adapter.MyCollectAdapter;
+import com.qs.mediainfoapp.adapter.NewsAdapter;
 import com.qs.mediainfoapp.adapter.VideoAdapter;
 import com.qs.mediainfoapp.api.Api;
 import com.qs.mediainfoapp.api.ApiConfig;
 import com.qs.mediainfoapp.api.QsCallback;
+import com.qs.mediainfoapp.entity.MyCollectResponse;
 import com.qs.mediainfoapp.entity.VideoEntity;
 import com.qs.mediainfoapp.entity.VideoListResponse;
+import com.qs.mediainfoapp.fragment.VideoFragment;
 import com.qs.mediainfoapp.listener.OnItemChildClickListener;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -39,12 +39,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class VideoFragment extends BaseFragment  implements OnItemChildClickListener {
+public class MyCollectActivity extends BaseActivity implements OnItemChildClickListener {
 
     private RecyclerView recyclerView;
-    private RefreshLayout refreshLayout;
     private int pageNum = 1;
-    private VideoAdapter videoAdapter;
+    private MyCollectAdapter videoAdapter;
     private List<VideoEntity> datas = new ArrayList<>();
     private LinearLayoutManager linearLayoutManager;
 
@@ -53,7 +52,6 @@ public class VideoFragment extends BaseFragment  implements OnItemChildClickList
     protected ErrorView mErrorView;
     protected CompleteView mCompleteView;
     protected TitleView mTitleView;
-    private int categoryId;
 
     /**
      * 当前播放的位置
@@ -64,34 +62,23 @@ public class VideoFragment extends BaseFragment  implements OnItemChildClickList
      */
     protected int mLastPos = mCurPos;
 
-    public VideoFragment() {
-    }
-
-    public static VideoFragment newInstance(int categoryId) {
-        VideoFragment fragment = new VideoFragment();
-        fragment.categoryId = categoryId;
-        return fragment;
-    }
-
-
     @Override
-    protected int initLayout() {
-        return R.layout.fragment_video;
+    public int initLayout() {
+        return R.layout.activity_mycollect;
     }
 
     @Override
-    protected void initView() {
+    public void initView() {
         initVideoView();
-        recyclerView = mRootView.findViewById(R.id.recyclerView);
-        refreshLayout = mRootView.findViewById(R.id.refreshLayout);
+        recyclerView = findViewById(R.id.recyclerView);
     }
 
     @Override
-    protected void initData() {
-        linearLayoutManager = new LinearLayoutManager(getActivity());
+    public void initData() {
+        linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
-        videoAdapter = new VideoAdapter(getActivity());
+        videoAdapter = new MyCollectAdapter(this);
         videoAdapter.setOnItemChildClickListener(this);
         recyclerView.setAdapter(videoAdapter);
         recyclerView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
@@ -110,27 +97,11 @@ public class VideoFragment extends BaseFragment  implements OnItemChildClickList
                 }
             }
         });
-        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-//                refreshLayout.finishRefresh(2000);
-                pageNum = 1;
-                getVideoList(true);
-            }
-        });
-        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
-            @Override
-            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-//                refreshLayout.finishLoadMore(2000);
-                pageNum++;
-                getVideoList(false);
-            }
-        });
-        getVideoList(true);
+        getVideoList();
     }
 
     protected void initVideoView() {
-        mVideoView = new VideoView(getActivity());
+        mVideoView = new VideoView(this);
         mVideoView.setOnStateChangeListener(new com.dueeeke.videoplayer.player.VideoView.SimpleOnStateChangeListener() {
             @Override
             public void onPlayStateChanged(int playState) {
@@ -142,15 +113,15 @@ public class VideoFragment extends BaseFragment  implements OnItemChildClickList
                 }
             }
         });
-        mController = new StandardVideoController(getActivity());
-        mErrorView = new ErrorView(getActivity());
+        mController = new StandardVideoController(this);
+        mErrorView = new ErrorView(this);
         mController.addControlComponent(mErrorView);
-        mCompleteView = new CompleteView(getActivity());
+        mCompleteView = new CompleteView(this);
         mController.addControlComponent(mCompleteView);
-        mTitleView = new TitleView(getActivity());
+        mTitleView = new TitleView(this);
         mController.addControlComponent(mTitleView);
-        mController.addControlComponent(new VodControlView(getActivity()));
-        mController.addControlComponent(new GestureView(getActivity()));
+        mController.addControlComponent(new VodControlView(this));
+        mController.addControlComponent(new GestureView(this));
         mController.setEnableOrientation(true);
         mVideoView.setVideoController(mController);
     }
@@ -206,14 +177,14 @@ public class VideoFragment extends BaseFragment  implements OnItemChildClickList
         }
         VideoEntity videoEntity = datas.get(position);
         //边播边存
-//        String proxyUrl = ProxyVideoCacheManager.getProxy(getActivity()).getProxyUrl(videoBean.getUrl());
+//        String proxyUrl = ProxyVideoCacheManager.getProxy(this).getProxyUrl(videoBean.getUrl());
 //        mVideoView.setUrl(proxyUrl);
 
         mVideoView.setUrl(videoEntity.getPlayurl());
         mTitleView.setTitle(videoEntity.getVtitle());
         View itemView = linearLayoutManager.findViewByPosition(position);
         if (itemView == null) return;
-        VideoAdapter.ViewHolder viewHolder = (VideoAdapter.ViewHolder) itemView.getTag();
+        MyCollectAdapter.ViewHolder viewHolder = (MyCollectAdapter.ViewHolder) itemView.getTag();
         //把列表中预置的PrepareView添加到控制器中，注意isPrivate此处只能为true。
         mController.addControlComponent(viewHolder.mPrepareView, true);
         Utils.removeViewFormParent(mVideoView);
@@ -230,60 +201,34 @@ public class VideoFragment extends BaseFragment  implements OnItemChildClickList
         if (mVideoView.isFullScreen()) {
             mVideoView.stopFullScreen();
         }
-        if (getActivity().getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        if (this.getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
         mCurPos = -1;
     }
 
-    private void getVideoList(boolean isRefresh){
-            HashMap<String, Object> params = new HashMap<>();
-            params.put("page", pageNum);
-            params.put("limit", ApiConfig.PAGE_SIZE);
-            params.put("categoryId", categoryId);
-            Api.config(ApiConfig.VIDEO_LIST_BY_CATEGORY, params).getRequest(getActivity(), new QsCallback() {
-                @Override
-                public void onSuccess(final String res) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(isRefresh){
-                                refreshLayout.finishRefresh(true);
-                            }else{
-                                refreshLayout.finishLoadMore(true);
-                            }
-                            VideoListResponse response = new Gson().fromJson(res, VideoListResponse.class);
-                            if(response != null && response.getCode()==0){
-                                List<VideoEntity> list = response.getPage().getList();
-                                if(list != null && list.size() >0){
-                                    if(isRefresh){
-                                        datas = list;
-                                    }else{
-                                        datas.addAll(list);
-                                    }
-                                    videoAdapter.setData(datas);
-                                    videoAdapter.notifyDataSetChanged();
-                                }else{
-                                    if(isRefresh){
-                                        showToast("暂时无法刷新数据");
-                                    }else{
-                                        showToast("没有更多数据");
-                                    }
-                                }
-                            }
-                            Log.d("token(VideoFragment)", res);
-                        }
-                    });
-                }
-
-                @Override
-                public void onFailure(Exception e) {
-                    if(isRefresh){
-                        refreshLayout.finishRefresh(true);
-                    }else{
-                        refreshLayout.finishLoadMore(true);
+    private void getVideoList() {
+        HashMap<String, Object> params = new HashMap<>();
+        Api.config(ApiConfig.VIDEO_MYCOLLECT, params).getRequest(this, new QsCallback() {
+            @Override
+            public void onSuccess(final String res) {
+                MyCollectResponse response = new Gson().fromJson(res, MyCollectResponse.class);
+                if (response != null && response.getCode() == 0) {
+                    List<VideoEntity> list = response.getList();
+                    if (list != null && list.size() > 0) {
+                        datas = list;
+                        videoAdapter.setData(datas);
+                        videoAdapter.notifyDataSetChanged();
                     }
                 }
-            });
+                Log.d("token(VideoFragment)", res);
+
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        });
     }
 }

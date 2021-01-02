@@ -54,6 +54,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="root"
+                        android:id="@+id/name"
                         android:textColor="@color/skin_text_white"
                         android:textSize="16sp" />
 
@@ -250,7 +251,7 @@
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:layout_centerVertical="true"
-                    android:src="@mipmap/icon_skin" />
+                    android:src="@mipmap/icon_logout" />
 
                 <TextView
                     android:layout_width="wrap_content"
